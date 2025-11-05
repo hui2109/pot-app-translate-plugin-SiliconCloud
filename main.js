@@ -1,6 +1,7 @@
 async function translate(text, from, to, options) {
     const {config, detect, setResult, utils} = options;
-    const {tauriFetch: fetch} = utils;
+    const {http} = utils;
+    const {fetch, Body, ResponseType} = http;
 
     let {apiKey, transPrompt, model = "Pro/deepseek-ai/DeepSeek-V3.1-Terminus"} = config;
 
@@ -30,22 +31,58 @@ Translate the above text enclosed with <translate_input> into ${to} without <tra
         ],
         temperature: 0.3,
         top_p: 0.7,
-        stream: true,
-        max_tokens: 8192
+        max_tokens: 8192,
+        stream: true
     }
-    const myOptions = {
-        method: 'POST',
-        headers: {Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json'},
-        body: JSON.stringify(body)
-    };
 
-    const response = await fetch(requestPath, myOptions);
-    const data = await response.json();
+    const response = await fetch(requestPath, {
+        method: "POST",
+        headers: {
+            "accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${apiKey}`
+        },
+        body: Body.json(body),
+        responseType: ResponseType.Text
+    });
 
-    if (response.ok) {
-        const data = await response.json();
-        setResult(data.content[0].text.trim());
-    } else {
-        throw `Http Request Error\nHttp Status: ${response.status}\n${JSON.stringify(response.data)}`;
+
+    if (!response.ok) {
+        throw new Error(`Http Request Error!\nHttp Status: ${response.status}\n${response.data}`);
     }
+
+    // 流式輸出
+    let result = "";
+    const lines = response.data.split('\n');
+
+    for (let line of lines) {
+        if ((!line.trim()) || line.startsWith('event:')) {
+            continue;
+        }
+
+        if (line.startsWith('data:')) {
+            try {
+                let new_line = '{"data":' + line.substring(5) + "}"
+                let data = JSON.parse(new_line);
+
+                if (data.data.type === "content_block_delta" && data.data.delta.text.trim()) {
+                    let newText = data.data.delta.text.trim();
+                    result += newText;
+                    setResult(result);
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                }
+            } catch (e) {
+                continue;
+            }
+        }
+    }
+
+    if (!result) {
+        throw new Error("No result generated");
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 500));
+    setResult(result);
+
+    return result;
 }
