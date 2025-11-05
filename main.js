@@ -69,7 +69,7 @@ Translate the above text enclosed with <translate_input> into ${to} without <tra
                     let newText = data.data.delta.text.trim();
                     result += newText;
                     setResult(result);
-                    await new Promise(resolve => setTimeout(resolve, 300));
+                    await new Promise(resolve => setTimeout(resolve, 60));
                 }
             } catch (e) {
                 continue;
@@ -81,7 +81,7 @@ Translate the above text enclosed with <translate_input> into ${to} without <tra
         throw new Error("No result generated");
     }
 
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 100));
     setResult(result);
 
     return result;
