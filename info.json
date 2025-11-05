@@ -1,10 +1,42 @@
 {
-  "id": "plugin.com.pot-app.lingva",
+  "id": "plugin.com.pot-app.SiliconCloud",
   "plugin_type": "translate",
-  "icon": "lingva.svg",
-  "display": "Lingva",
-  "homepage": "https://github.com/pot-app/pot-app-translate-plugin-template",
-  "needs": [{ "key": "requestPath", "display": "请求地址" }],
+  "icon": "SiliconCloud.svg",
+  "display": "SiliconCloud",
+  "homepage": "https://github.com/hui2109/pot-app-translate-plugin-SiliconCloud",
+  "needs": [
+    {
+      "key": "model",
+      "display": "模型选择",
+      "type": "select",
+      "options": {
+        "Pro/deepseek-ai/DeepSeek-V3.1-Terminus": "Pro/deepseek-ai/DeepSeek-V3.1-Terminus",
+        "Pro/deepseek-ai/DeepSeek-V3.2-Exp": "Pro/deepseek-ai/DeepSeek-V3.2-Exp",
+        "Pro/deepseek-ai/DeepSeek-R1": "Pro/deepseek-ai/DeepSeek-R1",
+        "deepseek-ai/DeepSeek-V3.1-Terminus": "deepseek-ai/DeepSeek-V3.1-Terminus",
+        "deepseek-ai/DeepSeek-V3.2-Exp": "deepseek-ai/DeepSeek-V3.2-Exp",
+        "deepseek-ai/DeepSeek-R1": "deepseek-ai/DeepSeek-R1",
+        "zai-org/GLM-4.6": "zai-org/GLM-4.6",
+        "zai-org/GLM-4.5": "zai-org/GLM-4.5",
+        "zai-org/GLM-4.5V": "zai-org/GLM-4.5V",
+        "Qwen/Qwen3-VL-32B-Thinking": "Qwen/Qwen3-VL-32B-Thinking",
+        "Qwen/Qwen3-VL-32B-Instruct": "Qwen/Qwen3-VL-32B-Instruct",
+        "Qwen/Qwen3-VL-8B-Instruct": "Qwen/Qwen3-VL-8B-Instruct"
+      },
+      "default": "Pro/deepseek-ai/DeepSeek-V3.1-Terminus"
+    },
+    {
+      "key": "apiKey",
+      "display": "API密钥",
+      "type": "input"
+    },
+    {
+      "key": "transPrompt",
+      "display": "翻译提示词（留空为默认）",
+      "type": "input",
+      "default": ""
+    }
+  ],
   "language": {
     "auto": "auto",
     "zh_cn": "zh",
